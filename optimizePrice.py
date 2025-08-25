@@ -68,15 +68,15 @@ def find_optimum(battery_cells: list[BatteryCell], cables: list[cable], skib: sk
                     'battery_order_price': battery_order_price+cell.shipping_cost,
                     'cable_order_price': cable_order_price+cable.shipping_cost,
                     'total_order_price': total_order_price,
-                    'links': cell.link + '\t' + cable.link
+                    'links': '\n\tBateria: ' + cell.link + '\n\tCabo: ' + cable.link
                 }
                 os.system('cls')
-                print(f'Tested {i}/{combinations}\nBest fit:\n')
+                print(f'\n\nTested {i}/{combinations}\nBest fit:\n')
                 for key, value in optimum.items():
                     if isinstance(value, float):
                         print(f"{key}: {value:.2f}")
                     else:
-                        print(f"{key}: {value}")
+                        print(f"\n{key}: {value}\n")
 
 
     return optimum
@@ -86,7 +86,9 @@ def main():
     parser = argparse.ArgumentParser(description="Calculate the optimum configuration of battery cells and cables.")
     parser.add_argument("--battery_cells_file", type=str,default='batteries.csv', help="Path to the battery.csv file (default: battery.csv)")
     parser.add_argument("--cables_file", type=str, default='cables.csv',help="Path to the cables.csv file (default: cables.csv)")
-    parser.add_argument("--distance", type=float, default=150, help="Distance in meters (default: 150)")
+    parser.add_argument("--distance", type=float, default=150, help="Distance in meters (default: 150 meters)")
+    parser.add_argument("--skib_r", type=float, default=2, help="Skib Resistance (default: 2 Ohms)")
+    parser.add_argument("--skib_i", type=float, default=3, help="Skib activation current (default: 3 Amps)")
 
     args = parser.parse_args()
 
@@ -120,8 +122,8 @@ def main():
     ]
 
     skib1 = skib(
-        ignition_current=3,  # Example value in Amperes
-        resistance=2  # Example value in Ohms
+        ignition_current=args.skib_i,  # Example value in Amperes
+        resistance=args.skib_r  # Example value in Ohms
     )
 
     # Calculate the optimum configuration
@@ -129,7 +131,7 @@ def main():
     if optimum:
         print('\n\nSuccesfully found optimum configuration.')
     else:
-        print("No optimum configuration found.")
+        print("\n\nNo optimum configuration found.")
 
 if __name__ == "__main__":
     main()
